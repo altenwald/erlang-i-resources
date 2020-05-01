@@ -1,5 +1,5 @@
 -module(listen).
--compile([export_all]).
+-export([listen/0, stop/1, speak/2, init/0]).
 
 listen() ->
     receive
@@ -14,12 +14,12 @@ listen() ->
         listen()
     end.
 
-para(Pid) ->
+stop(Pid) ->
     Pid ! stop,
     ok.
 
-dime(Pid, Algo) ->
-    Pid ! {self(), Algo},
+speak(Pid, Something) ->
+    Pid ! {self(), Something},
     receive
         ok -> ok
     end,
