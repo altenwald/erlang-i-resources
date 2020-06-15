@@ -1,4 +1,4 @@
--module(monitor).
+-module(launch_monitor).
 -export([init/0, add/2]).
 
 init() ->
@@ -15,7 +15,7 @@ loop(State) ->
         {'DOWN', _Ref, process, Pid, _Reason} ->
             [Name, Fun] = proplists:get_value(Pid, State),
             NewPid = launch(Name, Fun),
-            io:format("waking up child in ~p~n", [NewPid]),
+            io:format("restarting child as ~p~n", [NewPid]),
             OldChild = {Pid, [Name, Fun]},
             NewChild = {NewPid, [Name, Fun]},
             loop([NewChild|State] -- [OldChild])
@@ -29,4 +29,4 @@ launch(Name, Fun) ->
 
 add(Name, Fun) ->
     monitor ! {monitor, self(), Name, Fun},
-    receive {ok, Pid} -> Pid end.
+    receive {ok, Name} -> Name end.
